@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   onless_db:
-    container_name: post_db
+    container_name: book_store_db
     restart: always
     image: postgres
     env_file:
@@ -16,9 +16,9 @@ services:
     expose:
       - 5432
   onless_web:
-    container_name: post_web
+    container_name: book_store_web
     restart: always
-    image: post_web:latest
+    image: book_store_web:latest
     build:
       context: ..
       dockerfile: deploy/Dockerfile
@@ -27,7 +27,7 @@ services:
     ports:
       - "7777:8000"
     depends_on:
-      - post_db
+      - book_store_db
     env_file:
       - .env
     environment:
@@ -41,4 +41,4 @@ services:
 volumes:
   pgdata:
     external: true
-    name: postdata
+    name: book_store_data

@@ -3,8 +3,8 @@ server{
     listen 80;
 
     #listen 443 ssl;
-    #ssl_certificate /home/pyth/ssl/domain.crt;
-    #ssl_certificate_key /home/pyth/ssl/domain.key;
+    #ssl_certificate /home/yakubov/ssl/domain.crt;
+    #ssl_certificate_key /home/yakubov/ssl/domain.key;
 
     client_max_body_size 100m;
 
@@ -46,11 +46,11 @@ server{
     location = /favicon.ico { access_log off; log_not_found off; }
 
     location /static/ {
-        alias /home/pyth/post/staticfiles/;
+        alias /home/yakubov/book_store/staticfiles/;
     }
 
     location / {
-        proxy_pass http://unix:/home/pyth/post/post.sock;
+        proxy_pass http://unix:/home/yakubov/book_store/book_store.sock;
         proxy_set_header X-Forwarded-Host $server_name;
         proxy_set_header X-Real-IP $remote_addr;
         add_header P3P 'CP="ALL DSP COR PSAa PSDa OUR NOR ONL UNI COM NAV"';
@@ -63,6 +63,6 @@ server{
     }
 
     location /media/ {
-        alias /home/pyth/post/media/;
+        alias /home/yakubov/book_store/media/;
     }
 }

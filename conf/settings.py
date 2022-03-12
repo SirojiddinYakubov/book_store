@@ -44,6 +44,8 @@ DJANGO_APPS = [
 
 LOCAL_APPS = [
     'common.apps.CommonConfig',
+    'user.apps.UserConfig',
+    'book.apps.BookConfig',
 ]
 
 THIRD_PARTY_APPS = [
@@ -51,6 +53,8 @@ THIRD_PARTY_APPS = [
     'djoser',
     'rest_framework_simplejwt',
     'corsheaders',
+    'drf_yasg',
+    'django_crontab',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
@@ -128,7 +132,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'uz-UZ'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tashkent'
 
 USE_I18N = True
 
@@ -165,8 +169,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=10),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
     'UPDATE_LAST_LOGIN': False,
@@ -192,11 +196,18 @@ SIMPLE_JWT = {
     'JTI_CLAIM': 'jti',
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=60),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=10),
 }
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
     'http://127.0.0.1:8000',
+]
+
+AUTH_USER_MODEL = 'user.CustomUser'
+
+CRONJOBS = [
+    ('*/1 * * * *', 'api.v1.user.cron.send_report', '>> /home/yakubov/projects/digital_world/book_store/deploy/errors.log')
+    # ('0 0 * * SAT', 'api.v1.user.cron.send_report')
 ]

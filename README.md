@@ -1,6 +1,4 @@
-# README initial-django #
-
-# This is initial settings Django
+# README book_store #
 
 ### How to install this project ###
 
