@@ -1,10 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.db.models import F
 from rest_framework import generics
+
 from api.v1 import permissions
-from book.models import (Book, Category)
-from . import serializers
+from book.models import (Book)
+from user.tasks import send_report
 from . import filters
+from . import serializers
 
 User = get_user_model()
 
@@ -49,12 +51,20 @@ class BookRecommendedForUserView(generics.ListAPIView):
     """ Рекомендуется для пользователя """
     queryset = Book.objects.filter(is_active=True)
     serializer_class = serializers.BookSerializer
-    permission_classes = [permissions.AllowAllPermission]
+    permission_classes = [
+        permissions.ClientPermission |
+        permissions.AdminPermission
+    ]
 
     def get_queryset(self):
         interesting_categories = Book.objects.filter(is_active=True,
                                                      orderedproduct__order__customer_id=self.kwargs.get(
-                                                         'user_id')).order_by(
-            '-id').annotate(interesting_categories=F('category_id')).values_list('interesting_categories')
-        qs = Book.objects.filter(is_active=True, category_id__in=list(interesting_categories))
+                                                         'user_id')).order_by('-id').annotate(
+            value=F('category_id')).values_list('value', flat=True)
+        qs = Book.objects.filter(is_active=True, category_id__in=list(set(interesting_categories)))
         return qs
+
+    def get(self, request, *args, **kwargs):
+        task = send_report.delay()
+        print(task.id, task.state, task.status)
+        return super().get(request, *args, **kwargs)

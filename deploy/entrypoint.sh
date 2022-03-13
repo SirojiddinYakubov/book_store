@@ -12,7 +12,6 @@ echo "Successfully installed requirements.txt"
 
 echo "Collect static files"
 python manage.py collectstatic --noinput
-
 # Apply database migrations
 echo "Database migrations started"
 python manage.py makemigrations
