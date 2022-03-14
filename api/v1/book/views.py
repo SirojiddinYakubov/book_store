@@ -64,7 +64,7 @@ class BookRecommendedForUserView(generics.ListAPIView):
         qs = Book.objects.filter(is_active=True, category_id__in=list(set(interesting_categories)))
         return qs
 
-    def get(self, request, *args, **kwargs):
-        task = send_report.delay()
-        print(task.id, task.state, task.status)
-        return super().get(request, *args, **kwargs)
+    # def get(self, request, *args, **kwargs):
+    #     task = send_report.delay()
+    #     print(task.id, task.state, task.status)
+    #     return super().get(request, *args, **kwargs)
